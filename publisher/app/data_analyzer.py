@@ -88,3 +88,9 @@ class DataAnalyzer:
             "interesting": self._group(INTERESTING_CATEGORIES),
             "not_interesting": self._group(NOT_INTERESTING_CATEGORIES),
         }
+
+
+# if __name__ == "__main__":
+#     analyzer = DataAnalyzer(subset="train")
+#     messages = analyzer.sample_messages()
+#     print(messages)
