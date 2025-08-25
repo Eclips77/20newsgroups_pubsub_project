@@ -1,17 +1,3 @@
-
-"""
-producer.py
------------
-Kafka producer utility for the Publisher service.
-
-Provides:
-    - get_producer(): returns a KafkaProducer instance
-    - publish_group(messages: List[dict], topic: str) -> int: publishes a list of messages
-
-Environment:
-    - KAFKA_BOOTSTRAP: comma-separated bootstrap servers
-"""
-
 import json
 from typing import List
 from kafka import KafkaProducer

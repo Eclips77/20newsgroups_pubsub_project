@@ -33,7 +33,7 @@ class DataAnalyzer:
     DataAnalyzer loads the 20 Newsgroups dataset by category and samples one text per category.
     """
 
-    def __init__(self, subset: str = "train") -> None:
+    def __init__(self, subset) -> None:
         """
         Initialize the analyzer.
 
@@ -52,12 +52,12 @@ class DataAnalyzer:
         Returns:
             One text string (may be empty if none found).
         """
-        ds = fetch_20newsgroups(
+        dataset = fetch_20newsgroups(
             subset=self.subset,
             categories=[category],
             remove=("headers", "footers", "quotes"),
         )
-        texts = ds["data"] if "data" in ds else []
+        texts = dataset["data"] if "data" in dataset else []
         if not texts:
             return ""
         return random.choice(texts)
