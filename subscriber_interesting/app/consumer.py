@@ -1,11 +1,3 @@
-
-"""
-consumer.py (interesting)
--------------------------
-Kafka consumer logic for the 'interesting' subscriber.
-Spawns a background loop to read messages and store them in MongoDB.
-"""
-
 import json
 import time
 from datetime import datetime, timezone
