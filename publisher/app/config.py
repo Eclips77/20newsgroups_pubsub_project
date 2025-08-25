@@ -1,11 +1,3 @@
-
-"""
-config.py
----------
-Configuration for the Publisher service. Reads environment variables and
-exposes simple constants to be imported elsewhere.
-"""
-
 import os
 from typing import List
 
