@@ -1,16 +1,5 @@
-
-"""
-api.py
-------
-FastAPI application for the Publisher service.
-
-Endpoint:
-    - GET /publish : Fetch 20 messages (10 per group) and publish to Kafka topics.
-"""
-
 from typing import Dict, Any
 from fastapi import FastAPI
-
 from . import config
 from .data_analyzer import DataAnalyzer
 from .producer import publish_group
