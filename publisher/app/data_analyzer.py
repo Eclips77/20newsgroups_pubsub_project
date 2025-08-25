@@ -1,20 +1,3 @@
-"""
-data_analyzer.py
-----------------
-Utility module that fetches and prepares messages from the 20 Newsgroups dataset.
-
-The analyzer provides:
-    - sample_messages() -> Dict[str, List[dict]]
-      Returns a dictionary with two keys "interesting" and "not_interesting",
-      each holding a list of 10 items (one per category). Each item is a dict:
-          { "category": <str>, "text": <str> }
-
-Design choices:
-- Uses dataset["data"] (dict-style) to avoid attribute-style access like ds.data.
-- Removes headers/footers/quotes for cleaner text.
-- Returns empty string if no text is available for a category.
-"""
-
 import random
 from typing import Dict, List
 from sklearn.datasets import fetch_20newsgroups
