@@ -1,0 +1,93 @@
+# Interesting Subscriber
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subscriber-interesting
+  namespace: lkey09211-dev
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: subscriber-interesting } }
+  template:
+    metadata: { labels: { app: subscriber-interesting } }
+    spec:
+      containers:
+        - name: subscriber-interesting
+          image: REPLACE_WITH_YOUR_IMAGE/subscriber-interesting:latest
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - configMapRef: { name: app-config }
+          env:
+            - name: KAFKA_TOPIC
+              value: "interesting"
+            - name: MONGODB_COLLECTION
+              value: "interesting_messages"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: subscriber-interesting
+  namespace: lkey09211-dev
+spec:
+  selector: { app: subscriber-interesting }
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 8001
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: subscriber-interesting
+  namespace: lkey09211-dev
+spec:
+  to: { kind: Service, name: subscriber-interesting }
+  port: { targetPort: http }
+  tls: { termination: edge }
+---
+# Not Interesting Subscriber
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: subscriber-not-interesting
+  namespace: lkey09211-dev
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: subscriber-not-interesting } }
+  template:
+    metadata: { labels: { app: subscriber-not-interesting } }
+    spec:
+      containers:
+        - name: subscriber-not-interesting
+          image: REPLACE_WITH_YOUR_IMAGE/subscriber-not-interesting:latest
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - configMapRef: { name: app-config }
+          env:
+            - name: KAFKA_TOPIC
+              value: "not_interesting"
+            - name: MONGODB_COLLECTION
+              value: "not_interesting_messages"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: subscriber-not-interesting
+  namespace: lkey09211-dev
+spec:
+  selector: { app: subscriber-not-interesting }
+  ports:
+    - name: http
+      port: 8002
+      targetPort: 8002
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: subscriber-not-interesting
+  namespace: lkey09211-dev
+spec:
+  to: { kind: Service, name: subscriber-not-interesting }
+  port: { targetPort: http }
+  tls: { termination: edge }
