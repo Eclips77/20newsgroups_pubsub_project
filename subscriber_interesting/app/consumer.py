@@ -15,7 +15,7 @@ def _convert_kafka_ts_to_iso_utc(ts_ms: int | None) -> str:
 
 class InterestingConsumerService:
     """
-    OOP consumer service for the 'interesting' topic with minimal API.
+    OOP consumer service for the 'interesting' topic.
     """
 
     def __init__(self) -> None:
@@ -31,7 +31,7 @@ class InterestingConsumerService:
         )
         self._client = MongoClient(config.MONGO_URI, tz_aware=True, uuidRepresentation="standard")
         self._coll = self._client[config.MONGO_DB][config.COLLECTION_NAME]
-        self._coll.create_index([("partition", ASCENDING), ("kafka_offset", ASCENDING)], unique=True)
+        self._coll.create_index([("kafka_offset", ASCENDING)], unique=True)
         self._coll.create_index([("timestamp", ASCENDING)])
 
     @property
@@ -46,7 +46,6 @@ class InterestingConsumerService:
         for msg in self._consumer:
             try:
                 doc: Dict[str, Any] = {
-                    "partition": msg.partition,
                     "kafka_offset": msg.offset,
                     "topic": msg.topic,
                     "timestamp": _convert_kafka_ts_to_iso_utc(msg.timestamp),
@@ -59,18 +58,3 @@ class InterestingConsumerService:
             except Exception:
                 pass
             time.sleep(0.01)
-
-
-# Functional wrappers preserved for compatibility with existing api.py
-def get_collection():
-    return InterestingConsumerService().collection
-
-
-def build_consumer() -> KafkaConsumer:
-    return InterestingConsumerService().consumer
-
-
-def consume_once(consumer: KafkaConsumer, coll) -> None:
-    # Use a temporary service to consume; this keeps signature intact
-    service = InterestingConsumerService()
-    service.consume_once()
