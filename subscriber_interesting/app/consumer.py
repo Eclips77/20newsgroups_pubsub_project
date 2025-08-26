@@ -2,6 +2,7 @@ from kafka import KafkaConsumer, TopicPartition
 from pymongo import MongoClient, ASCENDING, errors
 from datetime import datetime, timezone
 from . import config
+import json
 class InterestingConsumerService:
     def __init__(self) -> None:
         self._consumer = KafkaConsumer(
@@ -17,7 +18,7 @@ class InterestingConsumerService:
         self._client = MongoClient(config.MONGO_URI, tz_aware=True, uuidRepresentation="standard")
         self._coll = self._client[config.MONGO_DB][config.COLLECTION_NAME]
         self._coll.create_index(
-            [("topic", ASCENDING),("offset", ASCENDING)],
+            [("topic", ASCENDING),("kafka_offset", ASCENDING)],
             unique=True
         )
         self._coll.create_index([("timestamp", ASCENDING)])
