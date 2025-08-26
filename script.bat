@@ -25,17 +25,17 @@ docker run -d --name mongo --network=mynet ^
 docker run -d --name publisher --network=mynet ^
   -e KAFKA_BOOTSTRAP=kafka:9092 ^
   -e MONGO_URI=mongodb://mongo:27017 ^
-  publisher-image:latest
+  publisher-image:v4
 
 docker run -d --name consumer1 --network=mynet ^
   -e KAFKA_BOOTSTRAP=kafka:9092 ^
   -e MONGO_URI=mongodb://mongo:27017 ^
-  consumer1-image:latest
+  consumer_interesting:v4
 
 docker run -d --name consumer2 --network=mynet ^
   -e KAFKA_BOOTSTRAP=kafka:9092 ^
   -e MONGO_URI=mongodb://mongo:27017 ^
-  consumer2-image:latest
+  consumer_non_interesting:v4
 
 docker ps
 pause
