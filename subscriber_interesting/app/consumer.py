@@ -1,17 +1,9 @@
-import json
-import time
-from datetime import datetime, timezone
-from typing import Dict, Any
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, TopicPartition
 from pymongo import MongoClient, ASCENDING, errors
+from datetime import datetime, timezone
 from . import config
-
-
+import json
 class InterestingConsumerService:
-    """
-    OOP consumer service for the 'interesting' topic.
-    """
-
     def __init__(self) -> None:
         self._consumer = KafkaConsumer(
             config.KAFKA_TOPIC,
@@ -25,7 +17,10 @@ class InterestingConsumerService:
         )
         self._client = MongoClient(config.MONGO_URI, tz_aware=True, uuidRepresentation="standard")
         self._coll = self._client[config.MONGO_DB][config.COLLECTION_NAME]
-        self._coll.create_index([("kafka_offset", ASCENDING)], unique=True)
+        self._coll.create_index(
+            [("topic", ASCENDING),("kafka_offset", ASCENDING)],
+            unique=True
+        )
         self._coll.create_index([("timestamp", ASCENDING)])
 
     @property
@@ -35,23 +30,32 @@ class InterestingConsumerService:
     @property
     def collection(self):
         return self._coll
-    
-    def consume_once(self) -> None:
-        """
 
+    def consume_once(self, max_records: int = 10, poll_timeout_ms: int = 200) -> int:
         """
-        for msg in self._consumer:
-            try:
-                doc: Dict[str, Any] = {
-                    "kafka_offset": msg.offset,
-                    "topic": msg.topic,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
-                    "value": msg.value,
-                }
-                self._coll.insert_one(doc)
-                self._consumer.commit()
-            except errors.DuplicateKeyError:
-                self._consumer.commit()
-            except Exception:
-                pass
-            time.sleep(0.01)
+        Consume up to `max_records` and return how many were stored.
+        Designed to be called from an HTTP endpoint without blocking.
+        """
+        consumed = 0
+        records = self._consumer.poll(timeout_ms=poll_timeout_ms, max_records=max_records)
+
+        for tp, msgs in records.items():
+            for msg in msgs:
+                try:
+                    doc = {
+                        "topic": msg.topic,
+                        "offset": msg.offset,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                        "value": msg.value,
+                    }
+                    self._coll.insert_one(doc)
+                    consumed += 1
+                except errors.DuplicateKeyError:
+                    pass
+                except Exception as e:
+                    continue
+
+        if consumed:
+            self._consumer.commit()
+
+        return consumed
