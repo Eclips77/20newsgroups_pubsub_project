@@ -3,6 +3,7 @@ from typing import List
 from kafka import KafkaProducer
 from . import config
 
+
 def get_producer() -> KafkaProducer:
     """
     Create and return a configured KafkaProducer.
