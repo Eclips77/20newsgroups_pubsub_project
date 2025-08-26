@@ -1,7 +1,5 @@
 import json
-from math import log
 from typing import List
-from venv import logger
 from kafka import KafkaProducer
 from . import config
 import logging

@@ -1,4 +1,3 @@
-from math import log
 import random
 from typing import Dict, List
 from sklearn.datasets import fetch_20newsgroups

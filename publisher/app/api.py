@@ -3,8 +3,7 @@ from fastapi import FastAPI
 from .flow_manager import FlowManager
 import logging
 logging.basicConfig(level=logging.INFO)
-logging.basicConfig(level=logging.INFO)
-
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Publisher Service", version="1.0.0")
 _flow_manager = FlowManager()
