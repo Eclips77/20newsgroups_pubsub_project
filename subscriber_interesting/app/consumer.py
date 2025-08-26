@@ -1,4 +1,4 @@
-from kafka import KafkaConsumer, TopicPartition
+from kafka import KafkaConsumer
 from pymongo import MongoClient, ASCENDING, errors
 from datetime import datetime, timezone
 from . import config
