@@ -1,6 +1,9 @@
 from typing import Dict, Any
 from fastapi import FastAPI
 from .flow_manager import FlowManager
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 
 app = FastAPI(title="Publisher Service", version="1.0.0")
@@ -15,6 +18,7 @@ def publish_messages() -> Dict[str, Any]:
         JSON with number of messages published per topic.
     """
     result = _flow_manager.fetch_and_publish()
+    logging.info("Published messages: %s", result)
     return result
 
 if __name__ == "__main__":

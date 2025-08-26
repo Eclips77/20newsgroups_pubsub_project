@@ -1,8 +1,11 @@
 import json
+from math import log
 from typing import List
+from venv import logger
 from kafka import KafkaProducer
 from . import config
-
+import logging
+logger = logging.getLogger(__name__)
 
 class ProducerService:
     """
@@ -38,6 +41,7 @@ class ProducerService:
         for m in messages:
             self._producer.send(topic, value=m)
             count += 1
+        logger.info("Published %d messages to topic '%s'", count, topic)
         self._producer.flush()
         return count
 

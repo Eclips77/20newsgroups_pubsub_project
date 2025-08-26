@@ -5,7 +5,6 @@ from sklearn.datasets import fetch_20newsgroups
 from . import config
 import logging
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class DataAnalyzer:
