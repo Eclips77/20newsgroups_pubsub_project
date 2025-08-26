@@ -72,7 +72,6 @@ class NotInterestingConsumerService:
             time.sleep(0.01)
 
 
-# Functional wrappers preserved for compatibility with existing api.py
 def get_collection():
     return NotInterestingConsumerService().collection
 
@@ -82,6 +81,5 @@ def build_consumer() -> KafkaConsumer:
 
 
 def consume_once(consumer: KafkaConsumer, coll) -> None:
-    # Use a temporary service to consume; this keeps signature intact
     service = NotInterestingConsumerService()
     service.consume_once()

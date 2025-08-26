@@ -1,15 +1,3 @@
-
-"""
-api.py (not_interesting)
-------------------------
-FastAPI app for the 'not_interesting' subscriber.
-Provides endpoints to fetch stored messages and a health check.
-
-Endpoints:
-    - GET /messages : Return all stored messages (most recent first)
-    - GET /health   : Health check
-"""
-
 import threading
 from typing import List, Dict, Any
 from fastapi import FastAPI
@@ -66,3 +54,8 @@ def health() -> Dict[str, str]:
     Health check endpoint.
     """
     return {"status": "ok"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8002)
