@@ -1,11 +1,10 @@
 from typing import Dict, Any
 from fastapi import FastAPI
-from . import config
-from .data_analyzer import DataAnalyzer
-from .producer import ProducerService
+from .flow_manager import FlowManager
+
 
 app = FastAPI(title="Publisher Service", version="1.0.0")
-_producer_service = ProducerService()
+_flow_manager = FlowManager()
 
 @app.get("/publish")
 def publish_messages() -> Dict[str, Any]:
@@ -15,18 +14,8 @@ def publish_messages() -> Dict[str, Any]:
     Returns:
         JSON with number of messages published per topic.
     """
-    analyzer = DataAnalyzer(subset=config.DATASET_SUBSET)
-    data = analyzer.sample_messages()
-
-    sent_interesting = _producer_service.publish_group(
-        data["interesting"], config.KAFKA_TOPIC_INTERESTING
-    )
-    sent_not_interesting = _producer_service.publish_group(
-        data["not_interesting"], config.KAFKA_TOPIC_NOT_INTERESTING
-    )
-
-    return {"published": {"interesting": sent_interesting, "not_interesting": sent_not_interesting}}
-
+    result = _flow_manager.fetch_and_publish()
+    return result
 
 # if __name__ == "__main__":
 #     import uvicorn
