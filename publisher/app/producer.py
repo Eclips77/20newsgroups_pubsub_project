@@ -4,35 +4,47 @@ from kafka import KafkaProducer
 from . import config
 
 
-def get_producer() -> KafkaProducer:
+class ProducerService:
     """
-    Create and return a configured KafkaProducer.
+    OOP wrapper around KafkaProducer with a minimal surface.
+    """
 
-    Returns:
-        KafkaProducer configured with JSON value serializer.
-    """
-    return KafkaProducer(
-        bootstrap_servers=config.KAFKA_BOOTSTRAP,
-        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-        linger_ms=10,
-        acks="all",
-    )
+    def __init__(
+        self,
+        bootstrap_servers: list[str] | None = None,
+        linger_ms: int = 10,
+        acks: str = "all",
+    ) -> None:
+        if bootstrap_servers is None:
+            bootstrap_servers = config.KAFKA_BOOTSTRAP
+        self._producer = KafkaProducer(
+            bootstrap_servers=bootstrap_servers,
+            value_serializer=lambda v: json.dumps(v).encode("utf-8"),
+            linger_ms=linger_ms,
+            acks=acks,
+        )
+
+    @property
+    def producer(self) -> KafkaProducer:
+        return self._producer
+
+    def publish_group(self, messages: List[dict], topic: str) -> int:
+        """
+        Publish a list of messages to a kafka topic and flush.
+
+        Returns the number of messages sent.
+        """
+        count = 0
+        for m in messages:
+            self._producer.send(topic, value=m)
+            count += 1
+        self._producer.flush()
+        return count
+
+
+def get_producer() -> KafkaProducer:
+    return ProducerService().producer
+
 
 def publish_group(messages: List[dict], topic: str) -> int:
-    """
-    Publish a list of messages to a kafka topic.
-
-    Args:
-        messages: List of message dicts to publish.
-        topic: Kafka topic name.
-
-    Returns:
-        Number of messages successfully sent (after flush).
-    """
-    producer = get_producer()
-    count = 0
-    for m in messages:
-        producer.send(topic, value=m)
-        count += 1
-    producer.flush()
-    return count
+    return ProducerService().publish_group(messages, topic)

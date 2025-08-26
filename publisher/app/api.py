@@ -2,9 +2,10 @@ from typing import Dict, Any
 from fastapi import FastAPI
 from . import config
 from .data_analyzer import DataAnalyzer
-from .producer import publish_group
+from .producer import ProducerService, publish_group
 
 app = FastAPI(title="Publisher Service", version="1.0.0")
+_producer_service = ProducerService()
 
 @app.get("/publish")
 def publish_messages() -> Dict[str, Any]:
@@ -17,7 +18,12 @@ def publish_messages() -> Dict[str, Any]:
     analyzer = DataAnalyzer(subset=config.DATASET_SUBSET)
     data = analyzer.sample_messages()
 
-    sent_interesting = publish_group(data["interesting"], config.KAFKA_TOPIC_INTERESTING)
-    sent_not_interesting = publish_group(data["not_interesting"], config.KAFKA_TOPIC_NOT_INTERESTING)
+    # Use the OOP service, but keep the functional wrapper import for compatibility
+    sent_interesting = _producer_service.publish_group(
+        data["interesting"], config.KAFKA_TOPIC_INTERESTING
+    )
+    sent_not_interesting = _producer_service.publish_group(
+        data["not_interesting"], config.KAFKA_TOPIC_NOT_INTERESTING
+    )
 
     return {"published": {"interesting": sent_interesting, "not_interesting": sent_not_interesting}}
