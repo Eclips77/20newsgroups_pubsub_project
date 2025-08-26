@@ -41,10 +41,3 @@ class ProducerService:
         self._producer.flush()
         return count
 
-
-def get_producer() -> KafkaProducer:
-    return ProducerService().producer
-
-
-def publish_group(messages: List[dict], topic: str) -> int:
-    return ProducerService().publish_group(messages, topic)
