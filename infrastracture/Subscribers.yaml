@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: subscriber-interesting
-          image: REPLACE_WITH_YOUR_IMAGE/subscriber-interesting:latest
+          image: docker.io/johnlenon003/consumer-interesting:v4
           ports:
             - containerPort: 8001
           envFrom:
@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
         - name: subscriber-not-interesting
-          image: REPLACE_WITH_YOUR_IMAGE/subscriber-not-interesting:latest
+          image: docker.io/johnlenon003/consumer-interesting:v4
           ports:
             - containerPort: 8002
           envFrom:
