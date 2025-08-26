@@ -1,10 +1,3 @@
-
-"""
-config.py (interesting)
------------------------
-Configuration for the 'interesting' subscriber service.
-"""
-
 import os
 from typing import List
 
