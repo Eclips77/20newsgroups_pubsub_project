@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
         - name: subscriber-not-interesting
-          image: docker.io/johnlenon003/consumer-interesting:v4
+          image: docker.io/johnlenon003/consumer-non-interesting:v4
           ports:
             - containerPort: 8002
           envFrom:

@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: publisher-api
-          image: REPLACE_WITH_YOUR_IMAGE/publisher-api:latest
+          image: docker.io/johnlenon003/publisher-image:v4
           ports:
             - containerPort: 8000
           envFrom:
