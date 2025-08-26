@@ -14,7 +14,6 @@ def consume():
     _service.consume_once()
     return {"status": "consumed"}
 
-
 @app.get("/messages")
 def messages() -> List[Dict[str, Any]]:
     """
