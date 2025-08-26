@@ -1,38 +1,28 @@
-
-"""
-api.py (not_interesting)
-------------------------
-FastAPI app for the 'not_interesting' subscriber.
-Provides endpoints to fetch stored messages and a health check.
-
-Endpoints:
-    - GET /messages : Return all stored messages (most recent first)
-    - GET /health   : Health check
-"""
-
 import threading
 from typing import List, Dict, Any
 from fastapi import FastAPI
 
-from .consumer import build_consumer, get_collection, consume_once
+from .consumer import NotInterestingConsumerService, get_collection
 
 app = FastAPI(title="Not-Interesting Subscriber Service", version="1.0.0")
+
+_service: NotInterestingConsumerService | None = None
 
 _running = False
 _worker: threading.Thread | None = None
 
 def _loop():
-    consumer = build_consumer()
-    coll = get_collection()
+    assert _service is not None
     while _running:
-        consume_once(consumer, coll)
+        _service.consume_once()
 
 @app.on_event("startup")
 def _on_startup():
     """
     Start the background consumer loop.
     """
-    global _running, _worker
+    global _running, _worker, _service
+    _service = NotInterestingConsumerService()
     _running = True
     _worker = threading.Thread(target=_loop, daemon=True)
     _worker.start()
@@ -64,3 +54,8 @@ def health() -> Dict[str, str]:
     Health check endpoint.
     """
     return {"status": "ok"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8002)

@@ -69,4 +69,4 @@ class DataAnalyzer:
 # if __name__ == "__main__":
 #     analyzer = DataAnalyzer(subset="train")
 #     messages = analyzer.sample_messages()
-#     print(messages)
+#     print(messages["interesting"][0])
