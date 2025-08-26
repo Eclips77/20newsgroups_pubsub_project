@@ -49,7 +49,7 @@ spec:
               value: "1"
           volumeMounts:
             - name: data
-              mountPath: /bitnami/kafka
+              mountPath: docker.io/bitnami/kafka
   volumeClaimTemplates:
     - metadata: { name: data }
       spec:
