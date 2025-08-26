@@ -36,21 +36,16 @@ class InterestingConsumerService:
     def collection(self):
         return self._coll
     
-    def _convert_kafka_ts_to_iso_utc(self,ts_ms: int | None) -> str:
-        if ts_ms is None:
-            return datetime.now(timezone.utc).isoformat()
-        return datetime.fromtimestamp(ts_ms / 1000.0, tz=timezone.utc).isoformat()
-
     def consume_once(self) -> None:
         """
-        
+
         """
         for msg in self._consumer:
             try:
                 doc: Dict[str, Any] = {
                     "kafka_offset": msg.offset,
                     "topic": msg.topic,
-                    "timestamp": self._convert_kafka_ts_to_iso_utc(msg.timestamp),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
                     "value": msg.value,
                 }
                 self._coll.insert_one(doc)
