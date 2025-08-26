@@ -3,7 +3,7 @@ from pymongo import MongoClient, ASCENDING, errors
 from datetime import datetime, timezone
 from . import config
 import json
-class InterestingConsumerService:
+class NotInterestingConsumerService:
     def __init__(self) -> None:
         self._consumer = KafkaConsumer(
             config.KAFKA_TOPIC,
