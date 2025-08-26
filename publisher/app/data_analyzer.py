@@ -1,32 +1,8 @@
 import random
 from typing import Dict, List
 from sklearn.datasets import fetch_20newsgroups
+from . import config
 
-INTERESTING_CATEGORIES = [
-    "alt.atheism",
-    "comp.graphics",
-    "comp.os.ms-windows.misc",
-    "comp.sys.ibm.pc.hardware",
-    "comp.sys.mac.hardware",
-    "comp.windows.x",
-    "misc.forsale",
-    "rec.autos",
-    "rec.motorcycles",
-    "rec.sport.baseball",
-]
-
-NOT_INTERESTING_CATEGORIES = [
-    "rec.sport.hockey",
-    "sci.crypt",
-    "sci.electronics",
-    "sci.med",
-    "sci.space",
-    "soc.religion.christian",
-    "talk.politics.guns",
-    "talk.politics.mideast",
-    "talk.politics.misc",
-    "talk.religion.misc",
-]
 
 class DataAnalyzer:
     """
@@ -85,8 +61,8 @@ class DataAnalyzer:
             A dictionary with two lists of message dicts (10 per group).
         """
         return {
-            "interesting": self._group(INTERESTING_CATEGORIES),
-            "not_interesting": self._group(NOT_INTERESTING_CATEGORIES),
+            "interesting": self._group(config.INTERESTING_CATEGORIES),
+            "not_interesting": self._group(config.NOT_INTERESTING_CATEGORIES),
         }
 
 

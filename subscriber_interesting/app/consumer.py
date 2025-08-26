@@ -1,22 +1,12 @@
-
-"""
-consumer.py (interesting)
--------------------------
-Kafka consumer logic for the 'interesting' subscriber.
-Spawns a background loop to read messages and store them in MongoDB.
-"""
-
 import json
 import time
 from datetime import datetime, timezone
 from typing import Dict, Any
-
 from kafka import KafkaConsumer
 from pymongo import MongoClient, ASCENDING, errors
-
 from . import config
 
-def _iso_utc_from_kafka_ts(ts_ms: int | None) -> str:
+def _convert_kafka_ts_to_iso_utc(ts_ms: int | None) -> str:
     """
     Convert Kafka millisecond timestamp to ISO UTC string.
     """
@@ -60,7 +50,7 @@ def consume_once(consumer: KafkaConsumer, coll) -> None:
                 "partition": msg.partition,
                 "kafka_offset": msg.offset,
                 "topic": msg.topic,
-                "timestamp": _iso_utc_from_kafka_ts(msg.timestamp),
+                "timestamp": _convert_kafka_ts_to_iso_utc(msg.timestamp),
                 "value": msg.value,
             }
             coll.insert_one(doc)
@@ -68,6 +58,5 @@ def consume_once(consumer: KafkaConsumer, coll) -> None:
         except errors.DuplicateKeyError:
             consumer.commit()
         except Exception:
-            # Do not commit — message will be retried
             pass
         time.sleep(0.01)
