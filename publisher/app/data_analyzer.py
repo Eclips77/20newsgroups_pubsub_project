@@ -1,8 +1,12 @@
+from math import log
 import random
 from typing import Dict, List
 from sklearn.datasets import fetch_20newsgroups
 from . import config
+import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class DataAnalyzer:
     """
@@ -34,6 +38,7 @@ class DataAnalyzer:
             remove=("headers", "footers", "quotes"),
         )
         texts = dataset["data"] if "data" in dataset else []
+        logger.info("Fetched %d texts from category '%s'", len(texts), category)
         if not texts:
             return ""
         return random.choice(texts)
@@ -51,6 +56,7 @@ class DataAnalyzer:
         out: List[Dict[str, str]] = []
         for cat in categories:
             out.append({"category": cat, "text": self._one_text_from_category(cat)})
+        logger.info("Sampled %d messages for categories: %s", len(out), categories)
         return out
 
     def sample_messages(self) -> Dict[str, List[Dict[str, str]]]:

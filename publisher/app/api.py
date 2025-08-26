@@ -17,6 +17,6 @@ def publish_messages() -> Dict[str, Any]:
     result = _flow_manager.fetch_and_publish()
     return result
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
